@@ -36,8 +36,10 @@ class KernelAlgorithm {
         });
 
         console.log('-------------------------------------');
-        console.log(`Inicjalny punkt minimum: ${JSON.stringify(vertices[indexOfTopVertice])}`);
-        console.log(`Inicjalny punkt maximum: ${JSON.stringify(vertices[indexOfBottomVertice])}`)
+        console.log('Inicjalny punkt minimum:');
+        console.log(vertices[indexOfTopVertice]);
+        console.log('Inicjalny punkt maximum:');
+        console.log(vertices[indexOfBottomVertice]);
 
         return {
             top: vertices[indexOfTopVertice],
@@ -108,8 +110,6 @@ class KernelAlgorithm {
         const currentPoint = vertices[index];
         const nextPoint = index === vertices.length - 1 ? vertices[0] : vertices[index + 1];
 
-        if (currentPoint.x === 4 && currentPoint.y === 11) console.log(this.checkIfIsTurningRight(previousPoint, currentPoint, nextPoint))
-
         if (!this.checkIfIsTurningRight(previousPoint, currentPoint, nextPoint)) return;
 
         if (currentPoint.y < previousPoint.y && currentPoint.y <= nextPoint.y) {
@@ -152,7 +152,7 @@ class KernelAlgorithm {
         return this.topVertice.y >= this.bottomVertice.y;
     }
 
-    drawPolygon(vertices, finalMessage) {
+    drawPolygon(vertices, doesPolygonHasKernel) {
         const xValues = vertices.map(vertice => vertice.x);
         const yValues = vertices.map(vertice => vertice.y);
 
@@ -184,6 +184,37 @@ class KernelAlgorithm {
             },
             name: 'Maximum'
         }];
+
+        if (doesPolygonHasKernel) {
+            const xValues = [];
+            for (let i = 0; i < 20; i++) {
+                xValues.push(i);
+            }
+
+            plotParams.push({
+                x: xValues,
+                y: Array(20).fill(this.topVertice.y),
+                type: 'line',
+                line: {
+                    color: 'rgb(255, 214, 10)',
+                    width: 2
+                },
+                name: 'Granica'
+            });
+            plotParams.push({
+                x: xValues,
+                y: Array(20).fill(this.bottomVertice.y),
+                type: 'line',
+                line: {
+                    color: 'rgb(186, 24, 27)',
+                    width: 2
+                },
+                name: 'Granica'
+            })
+        }
+
+        const finalMessage = doesPolygonHasKernel ?
+            'Wielokąt posiada jądro' : 'Wielokąt nie posiada jądra';
         plot(plotParams, { title: finalMessage });
     }
 
@@ -194,8 +225,9 @@ class KernelAlgorithm {
 
         console.log('-------------------------------------');
         console.log(finalMessage);
+        console.log('-------------------------------------');
 
-        this.drawPolygon([...vertices, vertices[0]], finalMessage)
+        this.drawPolygon([...vertices, vertices[0]], doesPolygonHasKernel)
     }
 
 }

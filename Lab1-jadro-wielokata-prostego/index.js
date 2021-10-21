@@ -6,4 +6,4 @@ const executeAlgorithm = (polygon) => {
     kernelAlgotithm.execute(polygon);
 }
 
-executeAlgorithm(polygons[5]);
+executeAlgorithm(polygons[2]);
