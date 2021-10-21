@@ -1,9 +1,10 @@
+const { plot } = require("nodeplotlib");
 
 class KernelAlgorithm {
 
     // Deklaracja zmiennych potrzebnych do prawidłowego działania algorytmu
     topVertice;
-    bottomVertice; 
+    bottomVertice;
 
     // Konstruktor klasy
     constructor(vertices) {
@@ -25,8 +26,8 @@ class KernelAlgorithm {
                 indexOfTopVertice = index;
                 indexOfBottomVertice = index;
                 return;
-            } 
-            
+            }
+
             if (yValue > yValuesOfVertices[indexOfTopVertice]) {
                 indexOfTopVertice = index;
             } else if (yValue < yValuesOfVertices[indexOfBottomVertice]) {
@@ -54,7 +55,7 @@ class KernelAlgorithm {
         yValuesOfVertices.forEach((yValue, index) => {
             if (index === 0) {
                 indexOfSearchedElement = index;
-            } else if (yValue < yValuesOfVertices[indexOfSearchedValue]) {
+            } else if (yValue < yValuesOfVertices[indexOfSearchedElement]) {
                 indexOfSearchedElement = index;
             }
         });
@@ -72,7 +73,7 @@ class KernelAlgorithm {
         yValuesOfVertices.forEach((yValue, index) => {
             if (index === 0) {
                 indexOfSearchedElement = index;
-            } else if (yValue > yValuesOfVertices[indexOfSearchedValue]) {
+            } else if (yValue > yValuesOfVertices[indexOfSearchedElement]) {
                 indexOfSearchedElement = index;
             }
         });
@@ -83,17 +84,17 @@ class KernelAlgorithm {
     // Obliczenie wyznacznika macierzy metodą Sariusa (macierze zawsze będzie 3x3)
     checkIfIsTurningRight(previousPoint, currentPoint, nextPoint) {
         const det = (
-            (previousPoint.x * currentPoint.y * 1) 
-                +
+            (previousPoint.x * currentPoint.y * 1)
+            +
             (previousPoint.y * 1 * nextPoint.x)
-                +
+            +
             (1 * currentPoint.x * nextPoint.y)
             -
             (
                 (1 * currentPoint.y * nextPoint.x)
-                    +
+                +
                 (previousPoint.x * 1 * nextPoint.y)
-                    +
+                +
                 (previousPoint.y * currentPoint.x * 1)
             )
         );
@@ -118,13 +119,14 @@ class KernelAlgorithm {
         }
     }
 
+    // Metoda sprawdzająca czy dany wielokąt posiada jądro
     checkIfPolygonHasKernel(vertices) {
         const topVertices = [];
         const bottomVertices = [];
 
         vertices.forEach((vertice, index) => {
             const orientationOfPoint = this.getOrientationOfThePoint(vertices, index);
-            
+
             if (orientationOfPoint === 'top') {
                 topVertices.push(vertice);
             } else if (orientationOfPoint === 'bottom') {
@@ -138,28 +140,62 @@ class KernelAlgorithm {
         console.log('Znalezione dolne wierzchołki spełniające warunki:')
         console.log(bottomVertices);
 
-        let topVertice = topVertices.length > 0 ? this.getMinFromTopVertices(topVertices) : undefined;
-        let bottomVertice = bottomVertices.length > 0 ? this.getMaxFromBottomVertices(bottomVertices) : undefined;
+        if (topVertices.length > 0) this.topVertice = this.getMinFromTopVertices(topVertices) ;
+        if (bottomVertices.length > 0) this.bottomVertice = this.getMaxFromBottomVertices(bottomVertices);
 
-        if (topVertice === undefined) topVertice = this.topVertice;
-        if (bottomVertice === undefined) bottomVertice = this.bottomVertice;
-        
         console.log('-------------------------------------');
         console.log('Minimum lokalne:')
-        console.log(topVertice);
+        console.log(this.topVertice);
         console.log('Maximum lokalne:')
-        console.log(bottomVertice);
+        console.log(this.bottomVertice);
 
-        return topVertice.y >= bottomVertice.y;
+        return this.topVertice.y >= this.bottomVertice.y;
+    }
+
+    drawPolygon(vertices, finalMessage) {
+        const xValues = vertices.map(vertice => vertice.x);
+        const yValues = vertices.map(vertice => vertice.y);
+
+        const plotParams = [{
+            x: xValues,
+            y: yValues,
+            type: 'lines+markers',
+            line: {
+                color: 'rgb(141, 153, 174)',
+                width: 2
+            },
+            name: 'Wielokąt'
+        }, {
+            x: [this.topVertice.x],
+            y: [this.topVertice.y],
+            type: 'markers',
+            marker: {
+                color: 'rgb(255, 214, 10)',
+                size: 14
+            },
+            name: 'Minimum'
+        }, {
+            x: [this.bottomVertice.x],
+            y: [this.bottomVertice.y],
+            mode: 'markers',
+            marker: {
+                color: 'rgb(186, 24, 27)',
+                size: 14
+            },
+            name: 'Maximum'
+        }];
+        plot(plotParams, { title: finalMessage });
     }
 
     execute(vertices) {
         const doesPolygonHasKernel = this.checkIfPolygonHasKernel(vertices);
-        const finalMessage = doesPolygonHasKernel ? 
+        const finalMessage = doesPolygonHasKernel ?
             'Wielokąt posiada jądro' : 'Wielokąt nie posiada jądra';
 
         console.log('-------------------------------------');
         console.log(finalMessage);
+
+        this.drawPolygon([...vertices, vertices[0]], finalMessage)
     }
 
 }

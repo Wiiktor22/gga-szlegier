@@ -20,6 +20,7 @@ const polygon2 = [
     { x: 17, y: 9 },
     { x: 14, y: 14 },
     { x: 9, y: 11 },
+    { x: 13, y: 12 },
     { x: 8, y: 7 },
     { x: 4, y: 8 },
     { x: 6, y: 11 },
@@ -47,9 +48,45 @@ const polygon4 = [
     { x: 3, y: 12 },
 ]
 
+const polygon5 = [
+    { x: 1, y: 3 },
+    { x: 7, y: 1 },
+    { x: 13, y: 2 },
+    { x: 13, y: 4 },
+    { x: 17, y: 6 },
+    { x: 13, y: 7 },
+    { x: 16, y: 10 },
+    { x: 14, y: 12 },
+    { x: 9, y: 8 },
+    { x: 8, y: 10 },
+    { x: 4, y: 13 },
+    { x: 6, y: 8 },
+    { x: 2, y: 6 },
+    { x: 5, y: 5 },
+]
+
+const polygon6 = [
+    { x: 1, y: 8 },
+    { x: 4, y: 2 },
+    { x: 8, y: 3 },
+    { x: 13, y: 1 },
+    { x: 17, y: 8 },
+    { x: 15, y: 14 },
+    { x: 10, y: 13 },
+    { x: 14, y: 10 },
+    { x: 10, y: 4 },
+    { x: 3, y: 8 },
+    { x: 4, y: 10 },
+    { x: 9, y: 7 },
+    { x: 8, y: 13 },
+    { x: 2, y: 14 },
+]
+
 module.exports = [
     polygon1,
     polygon2,
     polygon3,
-    polygon4
+    polygon4,
+    polygon5,
+    polygon6
 ];
