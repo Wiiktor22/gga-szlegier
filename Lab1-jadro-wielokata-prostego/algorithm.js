@@ -103,12 +103,28 @@ class KernelAlgorithm {
         return det < 0
     }
 
+    getDeeperPreviousPoint(index, vertices) {
+        if (index === 0) return vertices[vertices.length - 2];
+        else if (index === 1) return vertices[vertices.length - 1];
+        else return vertices[index - 2];
+    }
+
+    getDeeperNextPoint(index, vertices) {
+        console.log(vertices)
+        const lastIndex = vertices.length - 1;
+        if (index === lastIndex) return vertices[1];
+        else if (index === lastIndex - 1) return vertices[0];
+        else return vertices[index + 2];
+    }
 
     // Funkcja sprawdzająca orientację punktu oraz "skręt"
     getOrientationOfThePoint(vertices, index) {
-        const previousPoint = index === 0 ? vertices[vertices.length - 1] : vertices[index - 1];
+        let previousPoint = index === 0 ? vertices[vertices.length - 1] : vertices[index - 1];
         const currentPoint = vertices[index];
-        const nextPoint = index === vertices.length - 1 ? vertices[0] : vertices[index + 1];
+        let nextPoint = index === vertices.length - 1 ? vertices[0] : vertices[index + 1];
+
+        if (previousPoint.y === currentPoint.y) previousPoint = this.getDeeperPreviousPoint(index, vertices);
+        if (nextPoint.y === currentPoint.y) nextPoint = this.getDeeperNextPoint(index, vertices);
 
         if (!this.checkIfIsTurningRight(previousPoint, currentPoint, nextPoint)) return;
 
