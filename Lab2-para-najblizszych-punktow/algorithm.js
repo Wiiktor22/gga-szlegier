@@ -3,7 +3,7 @@ const { plot } = require("nodeplotlib");
 class ClosestPairOfPointAlgorithm {
 
     totalNumberOfPoints
-    plotParamsToDraw = []
+    plotParamsToDraw = [] // params for drawing final plot
 
     constructor(points) {
         this.totalNumberOfPoints = points.length
@@ -13,6 +13,7 @@ class ClosestPairOfPointAlgorithm {
         return [...pointsToSort].sort((a, b) => a[parameterName] - b[parameterName]);
     }
 
+    // Funckja zwracają posortowane punkty według współrzędnej x i y
     sortPoints(points) {
         const pointsSortedByX = this.sortPointsByParameter('x', points)
         const pointsSortedByY = this.sortPointsByParameter('y', points)
@@ -20,6 +21,7 @@ class ClosestPairOfPointAlgorithm {
         return { pointsSortedByX, pointsSortedByY }
     }
 
+    // Funckja odpowiadająca za znalezienie najbliższych puntków
     lookForClosestPoint(pointsSortedByX, pointsSortedByY) {
         const numberOfPoints = pointsSortedByX.length;
 
@@ -83,8 +85,10 @@ class ClosestPairOfPointAlgorithm {
         }
     }
 
+    // Funkcja szukająca najbliższej pary punktów w pasie delta
     lookForClosestSplitPoint(sortedXPoints, sortedYPoints, distance, pair) {
-        const xMiddlePoint = (sortedXPoints[0].x + sortedXPoints[sortedXPoints.length - 1].x) / 2;
+        const indexOfMiddleElement = Math.floor(sortedXPoints.length / 2);
+        const xMiddlePoint = (sortedXPoints[indexOfMiddleElement - 1].x + sortedXPoints[indexOfMiddleElement].x) / 2
 
         const minBorderOfDeltaLand = xMiddlePoint - distance;
         const maxBorderOfDeltaLand = xMiddlePoint + distance;
@@ -116,6 +120,7 @@ class ClosestPairOfPointAlgorithm {
         return { bestPair, bestDistance }
     }
 
+    // Funkcja wyzanczająca najbliższe punkty wśród małej grupy punktów (2-3)
     lookForClosestPointInSmallGroup(points) {
         let distance = this.calculateDistance(points[0], points[1]);
         let pair = [points[0], points[1]];
@@ -147,10 +152,12 @@ class ClosestPairOfPointAlgorithm {
         }
     }
 
+    // Funkcja odpowiadająca za obliczenie odległości na podstawie dostarczonych dwóch punktów
     calculateDistance(firstPoint, secondPoint) {
         return Math.sqrt(Math.pow(firstPoint.x - secondPoint.x, 2) + Math.pow(firstPoint.y - secondPoint.y, 2))
     }
 
+    // Funkcja wywołująca algorytm
     execute(points) {
         const { pointsSortedByX, pointsSortedByY } = this.sortPoints(points);
 
@@ -165,6 +172,7 @@ class ClosestPairOfPointAlgorithm {
         plot(this.plotParamsToDraw, { title: 'Para najbliższych punktów' });
     }
 
+    // Metody odpowiedzialne za rysowania wykresu
     addDrawingParamsForBothGroup(leftGroup, rightGroup) {
         const leftXValues = leftGroup.map(point => point.x);
         const leftYValues = leftGroup.map(point => point.y);

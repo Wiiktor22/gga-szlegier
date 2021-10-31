@@ -6,4 +6,4 @@ const executeAlgorithm = (points) => {
     closestPointAlgorith.execute(points);
 }
 
-executeAlgorithm(points[0]);
+executeAlgorithm(points[4]);
