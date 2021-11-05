@@ -110,7 +110,6 @@ class KernelAlgorithm {
     }
 
     getDeeperNextPoint(index, vertices) {
-        console.log(vertices)
         const lastIndex = vertices.length - 1;
         if (index === lastIndex) return vertices[1];
         else if (index === lastIndex - 1) return vertices[0];

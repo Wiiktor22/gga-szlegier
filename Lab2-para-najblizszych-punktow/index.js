@@ -1,9 +1,10 @@
 const ClosestPairOfPointAlgorithm = require('./algorithm');
 const points = require("./testCases/data");
+const lecturePoints = require("./testCases/lectureData");
 
 const executeAlgorithm = (points) => {
     const closestPointAlgorith = new ClosestPairOfPointAlgorithm(points);
     closestPointAlgorith.execute(points);
 }
 
-executeAlgorithm(points[4]);
+executeAlgorithm(lecturePoints[2]);

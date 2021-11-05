@@ -174,6 +174,11 @@ class ClosestPairOfPointAlgorithm {
 
     // Metody odpowiedzialne za rysowania wykresu
     addDrawingParamsForBothGroup(leftGroup, rightGroup) {
+        console.log('Lewa grupa:');
+        console.log(leftGroup);
+        console.log('Prawa grupa');
+        console.log(rightGroup);
+        
         const leftXValues = leftGroup.map(point => point.x);
         const leftYValues = leftGroup.map(point => point.y);
         this.plotParamsToDraw.push({
