@@ -75,13 +75,13 @@ class ClosestPairOfPointAlgorithm {
             return {
                 p: pair[0],
                 q: pair[1],
-                distance: Math.sqrt(distance)
+                distance
             }
         } else {
             return {
                 p: bestPair[0],
                 q: bestPair[1],
-                distance: Math.sqrt(bestDistance)
+                distance: bestDistance
             }
         }
     }
@@ -120,7 +120,7 @@ class ClosestPairOfPointAlgorithm {
 
         return { 
             bestPair, 
-            bestDistance: Math.sqrt(bestDistance)
+            bestDistance
         }
     }
 
@@ -152,13 +152,13 @@ class ClosestPairOfPointAlgorithm {
         return {
             p: pair[0],
             q: pair[1],
-            distance: Math.sqrt(distance)
+            distance
         }
     }
 
     // Funkcja odpowiadająca za obliczenie odległości na podstawie dostarczonych dwóch punktów
     calculateDistance(firstPoint, secondPoint) {
-        return Math.pow(firstPoint.x - secondPoint.x, 2) + Math.pow(firstPoint.y - secondPoint.y, 2)
+        return Math.sqrt(Math.pow(firstPoint.x - secondPoint.x, 2) + Math.pow(firstPoint.y - secondPoint.y, 2))
     }
 
     // Funkcja wywołująca algorytm
