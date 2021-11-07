@@ -10,7 +10,8 @@ class ClosestPairOfPointAlgorithm {
     }
 
     sortPointsByParameter(parameterName, pointsToSort) {
-        return [...pointsToSort].sort((a, b) => a[parameterName] - b[parameterName]);
+        const secondParameter = parameterName === 'x' ? 'y' : 'x';
+        return [...pointsToSort].sort((a, b) => a[parameterName] - b[parameterName] || a[secondParameter] - b[secondParameter]);
     }
 
     // Funckja zwracają posortowane punkty według współrzędnej x i y
@@ -74,13 +75,13 @@ class ClosestPairOfPointAlgorithm {
             return {
                 p: pair[0],
                 q: pair[1],
-                distance
+                distance: Math.sqrt(distance)
             }
         } else {
             return {
                 p: bestPair[0],
                 q: bestPair[1],
-                distance: bestDistance
+                distance: Math.sqrt(bestDistance)
             }
         }
     }
@@ -104,7 +105,7 @@ class ClosestPairOfPointAlgorithm {
         let bestPair = pair;
         let bestDistance = distance;
 
-        const numberOfInsideIterations = Math.min(4, pointInDeltaLand.length - 1)
+        const numberOfInsideIterations = Math.min(7, pointInDeltaLand.length - 1)
 
         for (let i = 0; i < pointInDeltaLand.length - 1; i++) {
             for (let j = i + 1; j <= numberOfInsideIterations; j++) {
@@ -117,7 +118,10 @@ class ClosestPairOfPointAlgorithm {
             }
         }
 
-        return { bestPair, bestDistance }
+        return { 
+            bestPair, 
+            bestDistance: Math.sqrt(bestDistance)
+        }
     }
 
     // Funkcja wyzanczająca najbliższe punkty wśród małej grupy punktów (2-3)
@@ -148,13 +152,13 @@ class ClosestPairOfPointAlgorithm {
         return {
             p: pair[0],
             q: pair[1],
-            distance
+            distance: Math.sqrt(distance)
         }
     }
 
     // Funkcja odpowiadająca za obliczenie odległości na podstawie dostarczonych dwóch punktów
     calculateDistance(firstPoint, secondPoint) {
-        return Math.sqrt(Math.pow(firstPoint.x - secondPoint.x, 2) + Math.pow(firstPoint.y - secondPoint.y, 2))
+        return Math.pow(firstPoint.x - secondPoint.x, 2) + Math.pow(firstPoint.y - secondPoint.y, 2)
     }
 
     // Funkcja wywołująca algorytm
