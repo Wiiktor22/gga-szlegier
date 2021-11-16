@@ -1,6 +1,9 @@
+const Node = require('./node');
+
 class KDTreeAlgorithm {
 
     paramsToDraw = [];
+    nodes = [];
 
 
     getIndexOfMedianPoint(points) {
@@ -29,10 +32,9 @@ class KDTreeAlgorithm {
         const { pointsSortedByX, pointsSortedByY } = pointsObject;
         const axis = depth % 2 === 0 ? 'x' : 'y';
 
-        console.log('Wpada ' + depth);
-
         if (pointsSortedByX.length === 1) {
             console.log('Koniec');
+            this.nodes.push(new Node(pointsSortedByX[0], [], [], depth, true))
             return
         }
 
@@ -61,6 +63,11 @@ class KDTreeAlgorithm {
             pointsSortedByX: rightOrUpGroupSortedByX,
             pointsSortedByY: rightOrUpGroupSortedByY
         }, depth + 1)
+
+        const testLeft = axis === 'x' ? leftOrDownGroupSortedByX : leftOrDownGroupSortedByY;
+        const testRight = axis === 'x' ? rightOrUpGroupSortedByX : rightOrUpGroupSortedByY;
+
+        this.nodes.push(new Node({ [axis]: medianPoint[axis] }, testLeft, testRight,depth, false)) 
     }
 
     getSortedPointed(pointsToSort) {
@@ -76,7 +83,8 @@ class KDTreeAlgorithm {
         const sortedPointsObject = this.getSortedPointed(points);
 
         this.buildTree(sortedPointsObject);
-        console.log(this.paramsToDraw);
+        console.log(this.nodes)
+        console.log(this.nodes[this.nodes.length - 1].leftOrBottomPoints)
     }
 }
 
