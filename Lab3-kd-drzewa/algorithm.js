@@ -1,5 +1,6 @@
 const Node = require('./node');
 const Area = require('./area');
+const { plot } = require("nodeplotlib");
 
 class KDTreeAlgorithm {
 
@@ -34,15 +35,13 @@ class KDTreeAlgorithm {
         const axis = depth % 2 === 0 ? 'x' : 'y';
 
         if (pointsSortedByX.length === 1) {
-            return new Node(pointsSortedByX[0], axis, [], [], true)
+            return new Node(pointsSortedByX[0], axis, [], [], depth, true)
         }
 
         const pointsForCurrentAxis = axis === 'x' ? pointsSortedByX : pointsSortedByY;
 
         const medianIndex = this.getIndexOfMedianPoint(pointsForCurrentAxis);
         const medianPoint = pointsForCurrentAxis[medianIndex];
-
-        this.paramsToDraw.push({ [axis]: medianPoint[axis] })
 
         const {
             leftOrDownGroup: leftOrDownGroupSortedByX,
@@ -63,7 +62,7 @@ class KDTreeAlgorithm {
             pointsSortedByY: rightOrUpGroupSortedByY
         }, depth + 1)
 
-        return new Node({ [axis]: medianPoint[axis] }, axis, testL, testR, false)
+        return new Node({ [axis]: medianPoint[axis] }, axis, testL, testR, depth, false)
     }
 
     getSortedPointed(pointsToSort) {
@@ -77,9 +76,6 @@ class KDTreeAlgorithm {
 
     findPointsInArea(tree, searchedArea) {
         const { minX, minY, maxX, maxY } = searchedArea;
-
-        console.log(tree)
-        console.log('-------------')
 
         const { coord, axis, leftNodes, rightNodes, isLeaf } = tree;
 
@@ -101,15 +97,145 @@ class KDTreeAlgorithm {
         }
     }
 
-    execute(points) {
+    execute(points, searchedArea) {
         const sortedPointsObject = this.getSortedPointed(points);
 
         const tree = this.buildTree(sortedPointsObject);
-
-        const searchedArea = new Area(10, 3, 13, 6);
+        
         this.findPointsInArea(tree, searchedArea);
 
-        console.log(this.foundedPoints)
+        this.addParamsForDrawingBorders(tree, undefined, undefined)
+        this.addParamsForDrawingPoints(points);
+        this.addParamsForDrawingArea(searchedArea);
+        this.addParamsForDrawingFoundedPoints(this.foundedPoints);
+
+        plot(this.paramsToDraw, { title: 'KD Tree' });
+    }
+
+    addParamsForDrawingPoints(points) {
+        const xValues = points.map(point => point.x);
+        const yValues = points.map(point => point.y);
+        this.paramsToDraw.push({
+            x: xValues,
+            y: yValues,
+            mode: 'markers',
+            marker: {
+                color: 'rgb(82, 84, 83)',
+                size: 8
+            },
+            name: 'Punkty'
+        })
+    }
+
+    addParamsForDrawingArea(area) {
+        const { minX, minY, maxX, maxY } = area;
+
+        const points = [
+            { x: minX, y: minY },
+            { x: maxX, y: minY },
+            { x: maxX, y: maxY },
+            { x: minX, y: maxY },
+            { x: minX, y: minY },
+        ];
+        const xValues = points.map(point => point.x);
+        const yValues = points.map(point => point.y);
+
+        this.paramsToDraw.push({
+            x: xValues,
+            y: yValues,
+            mode: 'lines',
+            line: {
+                color: 'rgb(252, 79, 48)',
+                width: 2
+            },
+            name: 'Przeszukiwana przestrzen'
+        })
+    }
+
+    addParamsForDrawingBorders(tree, parent, direction) {
+        const { coord, axis, leftNodes, rightNodes, depth, isLeaf } = tree;
+
+        if (isLeaf || Object.keys(coord).length > 1) return
+
+        if (depth === 0) {
+            const xVal = Array(30).fill(coord[axis])
+            const yVal = [...Array(30).keys()]
+            
+            this.paramsToDraw.push({
+                x: xVal,
+                y: yVal,
+                mode: 'lines',
+                line: {
+                    color: 'rgb(67, 178, 222)',
+                    width: 2
+                },
+                name: 'Granica'
+            })
+        } else {
+            let xVal = [];
+            let yVal = [];
+
+            const reverseAxis = axis === 'x' ? 'y' : 'x';
+
+            if (direction === 'left') {
+                if (axis === 'y') yVal = Array(parent[reverseAxis] + 1).fill(coord[axis])
+                else xVal = Array(parent[reverseAxis] + 1).fill(coord[axis])
+            } else {
+                if (axis === 'y') yVal = Array(30 - parent[reverseAxis]).fill(coord[axis])
+                else xVal = Array(30 - parent[reverseAxis]).fill(coord[axis])
+            }
+
+            if (axis === 'y') {
+                if (direction === 'left') {
+                    for (let i = 0; i < parent[reverseAxis] + 1; i++) {
+                        xVal.push(i)
+                    }
+                } else {
+                    for (let i = parent[reverseAxis]; i <= 30; i++) {
+                        xVal.push(i)
+                    }
+                }
+            } else {
+                if (direction === 'left') {
+                    for (let i = 0; i < parent[reverseAxis] + 1; i++) {
+                        yVal.push(i)
+                    }
+                } else {
+                    for (let i = parent[reverseAxis]; i <= 30; i++) {
+                        yVal.push(i)
+                    }
+                }
+            }
+
+            this.paramsToDraw.push({
+                x: xVal,
+                y: yVal,
+                mode: 'lines',
+                line: {
+                    color: 'rgb(67, 178, 222)',
+                    width: 2
+                },
+                name: 'Granica'
+            })
+        }
+
+        if (leftNodes) this.addParamsForDrawingBorders(leftNodes, { ...coord }, 'left');
+        if (rightNodes) this.addParamsForDrawingBorders(rightNodes, { ...coord }, 'right');
+    }
+
+    addParamsForDrawingFoundedPoints(points) {
+        const xValues = points.map(point => point.x);
+        const yValues = points.map(point => point.y);
+        this.paramsToDraw.push({
+            x: xValues,
+            y: yValues,
+            mode: 'markers',
+            marker: {
+                color: 'rgb(235, 112, 30)',
+                size: 8
+            },
+            name: 'Punkty'
+        })
     }
 }
 
