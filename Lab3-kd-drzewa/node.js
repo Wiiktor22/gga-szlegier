@@ -1,16 +1,16 @@
 class Node {
 
     coord
-    leftOrBottomPoints
-    rightOrBottomPoints
-    depth
+    axis
+    leftNodes
+    rightNodes
     isLeaf
 
-    constructor(coord, leftOrBottomPoints, rightOrBottomPoints, depth, isLeaf) {
+    constructor(coord, axis, leftNodes, rightNodes, isLeaf) {
         this.coord = coord;
-        this.leftOrBottomPoints = leftOrBottomPoints;
-        this.rightOrBottomPoints = rightOrBottomPoints;
-        this.depth = depth;
+        this.axis = axis;
+        this.leftNodes = leftNodes;
+        this.rightNodes = rightNodes;
         this.isLeaf = isLeaf;
     }
 

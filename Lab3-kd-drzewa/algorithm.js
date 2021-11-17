@@ -1,10 +1,11 @@
 const Node = require('./node');
+const Area = require('./area');
 
 class KDTreeAlgorithm {
 
     paramsToDraw = [];
     nodes = [];
-
+    foundedPoints = [];
 
     getIndexOfMedianPoint(points) {
         const potentialMedianIndex = Math.floor(points.length / 2);
@@ -33,9 +34,7 @@ class KDTreeAlgorithm {
         const axis = depth % 2 === 0 ? 'x' : 'y';
 
         if (pointsSortedByX.length === 1) {
-            console.log('Koniec');
-            this.nodes.push(new Node(pointsSortedByX[0], [], [], depth, true))
-            return
+            return new Node(pointsSortedByX[0], axis, [], [], true)
         }
 
         const pointsForCurrentAxis = axis === 'x' ? pointsSortedByX : pointsSortedByY;
@@ -55,19 +54,16 @@ class KDTreeAlgorithm {
             rightOrUpGroup: rightOrUpGroupSortedByY
         } = this.splitPoints(pointsSortedByY, medianPoint, axis);
 
-        this.buildTree({
+        const testL = this.buildTree({
             pointsSortedByX: leftOrDownGroupSortedByX,
             pointsSortedByY: leftOrDownGroupSortedByY,
         }, depth + 1)
-        this.buildTree({
+        const testR = this.buildTree({
             pointsSortedByX: rightOrUpGroupSortedByX,
             pointsSortedByY: rightOrUpGroupSortedByY
         }, depth + 1)
 
-        const testLeft = axis === 'x' ? leftOrDownGroupSortedByX : leftOrDownGroupSortedByY;
-        const testRight = axis === 'x' ? rightOrUpGroupSortedByX : rightOrUpGroupSortedByY;
-
-        this.nodes.push(new Node({ [axis]: medianPoint[axis] }, testLeft, testRight,depth, false)) 
+        return new Node({ [axis]: medianPoint[axis] }, axis, testL, testR, false)
     }
 
     getSortedPointed(pointsToSort) {
@@ -79,12 +75,41 @@ class KDTreeAlgorithm {
         }
     }
 
+    findPointsInArea(tree, searchedArea) {
+        const { minX, minY, maxX, maxY } = searchedArea;
+
+        console.log(tree)
+        console.log('-------------')
+
+        const { coord, axis, leftNodes, rightNodes, isLeaf } = tree;
+
+        if (isLeaf) {
+            const isThisPointInArea = Area.checkIfPointIsInTheArea(searchedArea, coord);
+            if (isThisPointInArea) this.foundedPoints.push(coord)
+            return
+        }
+
+        const pointsToCheck = axis === 'x' ? [minX, maxX] : [minY, maxY];
+
+        if (coord[axis] > pointsToCheck[0] && coord[axis] > pointsToCheck[1]) {
+            this.findPointsInArea(leftNodes, searchedArea);
+        } else if (coord[axis] < pointsToCheck[0] && coord[axis] < pointsToCheck[1]) {
+            this.findPointsInArea(rightNodes, searchedArea);
+        } else {
+            this.findPointsInArea(leftNodes, searchedArea);
+            this.findPointsInArea(rightNodes, searchedArea);
+        }
+    }
+
     execute(points) {
         const sortedPointsObject = this.getSortedPointed(points);
 
-        this.buildTree(sortedPointsObject);
-        console.log(this.nodes)
-        console.log(this.nodes[this.nodes.length - 1].leftOrBottomPoints)
+        const tree = this.buildTree(sortedPointsObject);
+
+        const searchedArea = new Area(10, 3, 13, 6);
+        this.findPointsInArea(tree, searchedArea);
+
+        console.log(this.foundedPoints)
     }
 }
 
