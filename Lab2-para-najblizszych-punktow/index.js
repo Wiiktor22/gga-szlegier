@@ -7,4 +7,4 @@ const executeAlgorithm = (points) => {
     closestPointAlgorith.execute(points);
 }
 
-executeAlgorithm(lecturePoints[0]);
+executeAlgorithm(lecturePoints[1]);

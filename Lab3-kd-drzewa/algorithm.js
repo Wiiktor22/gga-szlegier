@@ -15,14 +15,22 @@ class KDTreeAlgorithm {
 
     splitPoints(points, median, axis) {
         const medianValueToSplit = median[axis];
+        console.log(medianValueToSplit)
 
         const leftOrDownGroup = [];
         const rightOrUpGroup = [];
 
+        const halfThePoints = points.length / 2;
+
         [...points].forEach((point) => {
-            if (point[axis] <= medianValueToSplit) leftOrDownGroup.push(point)
+            if (point[axis] <= medianValueToSplit && leftOrDownGroup.length < halfThePoints) leftOrDownGroup.push(point)
             else rightOrUpGroup.push(point)
         })
+
+        console.log('----------')
+        console.log(points)
+        console.log(leftOrDownGroup);
+        console.log(rightOrUpGroup);
 
         return {
             leftOrDownGroup,
@@ -38,10 +46,24 @@ class KDTreeAlgorithm {
             return new Node(pointsSortedByX[0], axis, [], [], depth, true)
         }
 
+        if (pointsSortedByX.length === 0) {
+
+        }
+
         const pointsForCurrentAxis = axis === 'x' ? pointsSortedByX : pointsSortedByY;
 
         const medianIndex = this.getIndexOfMedianPoint(pointsForCurrentAxis);
         const medianPoint = pointsForCurrentAxis[medianIndex];
+
+        // console.log(pointsSortedByX);
+        // console.log(pointsSortedByY);
+
+        // console.log('----------')
+        // console.log(pointsForCurrentAxis)
+        // console.log(medianPoint)
+        // console.log(depth);
+        // console.log(axis)
+
 
         const {
             leftOrDownGroup: leftOrDownGroupSortedByX,
@@ -53,16 +75,16 @@ class KDTreeAlgorithm {
             rightOrUpGroup: rightOrUpGroupSortedByY
         } = this.splitPoints(pointsSortedByY, medianPoint, axis);
 
-        const testL = this.buildTree({
+        const pointsLeft = this.buildTree({
             pointsSortedByX: leftOrDownGroupSortedByX,
             pointsSortedByY: leftOrDownGroupSortedByY,
         }, depth + 1)
-        const testR = this.buildTree({
+        const pointsRight = this.buildTree({
             pointsSortedByX: rightOrUpGroupSortedByX,
             pointsSortedByY: rightOrUpGroupSortedByY
         }, depth + 1)
 
-        return new Node({ [axis]: medianPoint[axis] }, axis, testL, testR, depth, false)
+        return new Node({ [axis]: medianPoint[axis] }, axis, pointsLeft, pointsRight, depth, false)
     }
 
     getSortedPointed(pointsToSort) {
