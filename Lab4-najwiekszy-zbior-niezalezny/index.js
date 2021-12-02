@@ -7,4 +7,4 @@ const executeAlgorithm = (data) => {
     independentSetAlgorithm.execute(data);
 }
 
-executeAlgorithm(testData[0])
+executeAlgorithm(testData[1])
