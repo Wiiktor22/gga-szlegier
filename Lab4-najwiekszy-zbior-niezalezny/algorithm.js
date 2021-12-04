@@ -17,7 +17,10 @@ class IndependentSetAlgorithm {
     findLargestIndependentSet(node, parentNode) {
         this.addItemIntoListOfNeighboards(node, parentNode);
 
+        if (node.liss !== 0) return node.liss;
         if (node.children.length === 0) return 1;
+
+        console.log("Liczę rekurencyjnie dla tagu: " + node.tag)
 
         let sizeExcludingNode = 0
         node.children.forEach(childrenNode => {
@@ -31,12 +34,13 @@ class IndependentSetAlgorithm {
             })
         })
 
-        return Math.max(sizeExcludingNode, sizeIncludingNode);
+        return (node.liss = Math.max(sizeExcludingNode, sizeIncludingNode));
     }
 
     execute(graph) {
         const largestIndependentSet = this.findLargestIndependentSet(graph.root, null);
 
+        console.log("\n-------------------------------")
         console.log(`Największy zbiór niezależny: ${largestIndependentSet}`);
         console.log(this.listOfNeighboards)
     }
