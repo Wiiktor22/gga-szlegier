@@ -1,8 +1,10 @@
 const Point = require('./point');
+const { plot } = require("nodeplotlib");
 
 class SweepCrossingAlgorithm {
 
     intersectionPoints = [];
+    plotParamsToDraw = [];
 
     // zmienne pomocne dla algorytmu
     numberOfIterations;
@@ -132,6 +134,69 @@ class SweepCrossingAlgorithm {
         this.sweep(sortedData.horizontal, sortedData.vertical, 0, []);
 
         console.log(this.intersectionPoints)
+
+        this.drawVerticalSegments(sortedData.vertical)
+        this.drawHorizontalSegments(sortedData.horizontal)
+        this.drawIntersectionsPoints()
+        console.log(this.plotParamsToDraw)
+        plot(this.plotParamsToDraw, { title: 'Punkty przecięcia - metoda zamiatania' });
+    }
+
+    // Rysowanie
+    drawVerticalSegments(segments) {
+        segments.forEach(({ segment }) => {
+            const length = segment.secondPoint.y - segment.firstPoint.y + 1;
+            const xValues = Array(length).fill(segment.firstPoint.x);
+
+            const yValues = [...Array(length).keys()].map(item => item + segment.firstPoint.y);
+
+            this.plotParamsToDraw.push({
+                x: xValues,
+                y: yValues,
+                mode: 'lines',
+                line: {
+                    color: 'rgb(79, 79, 79)',
+                    width: 2
+                },
+                name: ''
+            })
+        })
+    }
+
+    drawHorizontalSegments(segments) {
+        segments.forEach(({ segment }) => {
+            const length = segment.secondPoint.x - segment.firstPoint.x + 1;
+            const xValues = [...Array(length).keys()].map(item => item + segment.firstPoint.x);
+
+            const yValues = Array(length).fill(segment.firstPoint.y);
+
+            this.plotParamsToDraw.push({
+                x: xValues,
+                y: yValues,
+                mode: 'lines',
+                line: {
+                    color: 'rgb(79, 79, 79)',
+                    width: 2
+                },
+                name: ''
+            })
+        })
+    }
+
+    drawIntersectionsPoints() {
+        this.intersectionPoints.forEach(({ x, y }) => {
+            console.log(x, y)
+            this.plotParamsToDraw.push({
+                x: [x],
+                y: [y],
+                mode: 'markers',
+                marker: {
+                    color: 'rgb(180, 219, 72)',
+                    size: 10
+                },
+                name: 'Punkt przecięć'
+            })
+        })
     }
 }
 
