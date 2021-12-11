@@ -133,12 +133,9 @@ class SweepCrossingAlgorithm {
 
         this.sweep(sortedData.horizontal, sortedData.vertical, 0, []);
 
-        console.log(this.intersectionPoints)
-
         this.drawVerticalSegments(sortedData.vertical)
         this.drawHorizontalSegments(sortedData.horizontal)
         this.drawIntersectionsPoints()
-        console.log(this.plotParamsToDraw)
         plot(this.plotParamsToDraw, { title: 'Punkty przecięcia - metoda zamiatania' });
     }
 
