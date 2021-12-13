@@ -1,5 +1,6 @@
 const Point = require('./point');
 const { plot } = require("nodeplotlib");
+const findLastIndex = require('lodash/findLastIndex');
 
 class SweepCrossingAlgorithm {
 
@@ -67,17 +68,25 @@ class SweepCrossingAlgorithm {
         if (state.length === 0) return [segmentToAdd]
 
         const yPositionsOfSegmentsInState = state.map(({ segment }) => segment.firstPoint.y);
-        const indexOfFirstBiggerElement = yPositionsOfSegmentsInState.findIndex(y => segmentToAdd.segment.firstPoint.y < y);
+        // yPositionsOfSegmentsInState.reverse()
+        // const indexOfFirstBiggerElement = yPositionsOfSegmentsInState.findIndex(y => segmentToAdd.segment.firstPoint.y < y);
+
+        const indexOfFirstBiggerElement = findLastIndex(yPositionsOfSegmentsInState, y => segmentToAdd.segment.firstPoint.y < y);
+
+        console.log(yPositionsOfSegmentsInState)
+        console.log(`Dla ${segmentToAdd.tag}=${segmentToAdd.segment.firstPoint.y} -> ${indexOfFirstBiggerElement}`)
 
         if (indexOfFirstBiggerElement === 0) {
             const copy = [...state];
             copy.splice(1, 0, segmentToAdd)
             return copy
         } else if (indexOfFirstBiggerElement === -1) {
-            return [segmentToAdd, ...state];
+            return [segmentToAdd, ...state]; // DOBRZE!
+        } else if (indexOfFirstBiggerElement === state.length - 1) {
+            return [...state, segmentToAdd]; // DOBRZE!
         } else {
             const copy = [...state];
-            copy.splice(indexOfFirstBiggerElement, 0, segmentToAdd)
+            copy.splice(indexOfFirstBiggerElement + 1, 0, segmentToAdd)
             return copy
         }
     }

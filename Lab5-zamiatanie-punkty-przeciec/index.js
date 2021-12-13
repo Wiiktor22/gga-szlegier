@@ -6,4 +6,4 @@ const executeAlgorithm = (data) => {
     algorithm.execute(data);
 }
 
-executeAlgorithm(testCases[0])
+executeAlgorithm(testCases[3])
