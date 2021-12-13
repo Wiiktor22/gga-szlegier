@@ -18,6 +18,54 @@ const testCase1 = {
     ]
 };
 
+const testCase2 = {
+    horizontal: [
+        { tag: 'A', segment: new Segment(2, 20, 10, 20 ) },
+        { tag: 'B', segment: new Segment(3, 17, 9, 17 ) },
+        { tag: 'C', segment: new Segment(2, 14, 10, 14 ) },
+        { tag: 'D', segment: new Segment(3, 10, 9, 10 ) },
+        { tag: 'E', segment: new Segment(2, 7, 10, 7 ) },
+        { tag: 'F', segment: new Segment(3, 4, 9, 4 ) },
+    ],
+    vertical: [
+        { segment: new Segment(6, 1, 6, 24) },
+    ]
+};
+
+const testCase3 = {
+    horizontal: [
+        { tag: 'A', segment: new Segment(2, 2, 10, 2 ) },
+        { tag: 'B', segment: new Segment(2, 5, 10, 5 ) },
+        { tag: 'C', segment: new Segment(2, 8, 10, 8 ) },
+        { tag: 'D', segment: new Segment(2, 11, 10, 11 ) },
+        { tag: 'E', segment: new Segment(10, 7, 18, 7 ) },
+        { tag: 'F', segment: new Segment(10, 3, 18, 3 ) },
+        { tag: 'G', segment: new Segment(10, 11, 18, 11 ) },
+        { tag: 'H', segment: new Segment(10, 2, 18, 2 ) },
+    ],
+    vertical: [
+        { segment: new Segment(2, 2, 2, 11) },
+        { segment: new Segment(10, 2, 10, 11) },
+        { segment: new Segment(18, 2, 18, 11) },
+    ]
+};
+
+const testCase4 = {
+    horizontal: [
+        { tag: 'A', segment: new Segment(10, 12, 10, 12 ) },
+        { tag: 'B', segment: new Segment(10, 5, 10, 5 ) },
+        { tag: 'C', segment: new Segment(10, 18, 10, 18 ) },
+        { tag: 'D', segment: new Segment(10, 2, 10, 2 ) },
+        { tag: 'E', segment: new Segment(10, 14, 10, 14 ) },
+    ],
+    vertical: [
+        { segment: new Segment(10, 2, 10, 20) },
+    ]
+}
+
 module.exports = [
-    testCase1
+    testCase1,
+    testCase2,
+    testCase3,
+    testCase4
 ]

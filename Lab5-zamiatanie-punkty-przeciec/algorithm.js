@@ -83,15 +83,15 @@ class SweepCrossingAlgorithm {
     }
 
     // Metoda odpowiedzialna za usunięcie odcinka z statusu miotły
-    removeSegmentFromState(state, segmentToRemove) {
-        const { tag: tagToRemove } = segmentToRemove;
-        return [...state].filter(({ tag }) => tag !== tagToRemove)
+    removeSegmentFromState(state, segmentsToRemove) {
+        return [...state].filter(({ tag }) => !segmentsToRemove.includes(tag))
     }
 
     sweep(horizontalSeg, verticalSeg, iteration, state) {
         if (iteration > this.numberOfIterations) return;
 
         let stateInThisIteration = [...state];
+        const elementsToRemoveinInThisIteration = [];
 
         if (iteration === this.nextHorizontalAction) {
             if (iteration !== 0) {
@@ -103,18 +103,25 @@ class SweepCrossingAlgorithm {
                 const tagsAlreadyInState = [...state].map(({ tag }) => tag);
                 segmentsWithThisX.forEach((element) => {
                     const isAlreadyInState = tagsAlreadyInState.includes(element.tag);
-                    const functionToExecute = isAlreadyInState ? this.removeSegmentFromState : this.addSegmentToState;
-                    stateInThisIteration = functionToExecute(stateInThisIteration, element)
+                    if (!isAlreadyInState) {
+                        stateInThisIteration = this.addSegmentToState(stateInThisIteration, element)
+                    } else {
+                        elementsToRemoveinInThisIteration.push(element.tag);
+                    }
                 });
             }
+        }
 
-            this.nextHorizontalAction = this.generateNewNextHorizontalAction(horizontalSeg, iteration)
-        } 
-        
         if (iteration === this.nextVerticalAction) {
             if (iteration !== 0) this.addIntersectionsPoints(verticalSeg, stateInThisIteration, iteration)
             this.nextVerticalAction = this.generateNewNextVerticalAction(verticalSeg, iteration)
         }
+
+        if (elementsToRemoveinInThisIteration.length > 0) {
+            stateInThisIteration = this.removeSegmentFromState(stateInThisIteration, elementsToRemoveinInThisIteration)
+        }
+
+        this.nextHorizontalAction = this.generateNewNextHorizontalAction(horizontalSeg, iteration)
 
         const tagsInThisIteration = [...stateInThisIteration].map(({ tag }) => tag)
         console.log(`Iteracja numer: ${iteration} -> Stan ${tagsInThisIteration.join(', ')}`);
@@ -129,7 +136,7 @@ class SweepCrossingAlgorithm {
             vertical: this.sortSegments(vertical)
         }
 
-        this.numberOfIterations = this.defineLastIterationNumber(sortedData.horizontal, sortedData.vertical);
+        this.numberOfIterations = this.defineLastIterationNumber(sortedData.horizontal, sortedData.vertical) + 1;
 
         this.sweep(sortedData.horizontal, sortedData.vertical, 0, []);
 
@@ -182,7 +189,6 @@ class SweepCrossingAlgorithm {
 
     drawIntersectionsPoints() {
         this.intersectionPoints.forEach(({ x, y }) => {
-            console.log(x, y)
             this.plotParamsToDraw.push({
                 x: [x],
                 y: [y],
