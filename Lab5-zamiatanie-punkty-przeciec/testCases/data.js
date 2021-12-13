@@ -63,9 +63,24 @@ const testCase4 = {
     ]
 }
 
+const testCase5 = {
+    horizontal: [
+        { tag: 'A', segment: new Segment(2, 4, 26, 4 ) },
+    ],
+    vertical: [
+        { segment: new Segment(4, 4, 4, 4) },
+        { segment: new Segment(6, 4, 6, 4) },
+        { segment: new Segment(12, 4, 12, 4) },
+        { segment: new Segment(8, 4, 8, 4) },
+        { segment: new Segment(23, 4, 23, 4) },
+        { segment: new Segment(19, 4, 19, 4) },
+    ]
+}
+
 module.exports = [
     testCase1,
     testCase2,
     testCase3,
-    testCase4
+    testCase4,
+    testCase5
 ]
