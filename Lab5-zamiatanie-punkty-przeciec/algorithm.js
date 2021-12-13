@@ -68,22 +68,16 @@ class SweepCrossingAlgorithm {
         if (state.length === 0) return [segmentToAdd]
 
         const yPositionsOfSegmentsInState = state.map(({ segment }) => segment.firstPoint.y);
-        // yPositionsOfSegmentsInState.reverse()
-        // const indexOfFirstBiggerElement = yPositionsOfSegmentsInState.findIndex(y => segmentToAdd.segment.firstPoint.y < y);
-
         const indexOfFirstBiggerElement = findLastIndex(yPositionsOfSegmentsInState, y => segmentToAdd.segment.firstPoint.y < y);
-
-        console.log(yPositionsOfSegmentsInState)
-        console.log(`Dla ${segmentToAdd.tag}=${segmentToAdd.segment.firstPoint.y} -> ${indexOfFirstBiggerElement}`)
 
         if (indexOfFirstBiggerElement === 0) {
             const copy = [...state];
             copy.splice(1, 0, segmentToAdd)
             return copy
         } else if (indexOfFirstBiggerElement === -1) {
-            return [segmentToAdd, ...state]; // DOBRZE!
+            return [segmentToAdd, ...state];
         } else if (indexOfFirstBiggerElement === state.length - 1) {
-            return [...state, segmentToAdd]; // DOBRZE!
+            return [...state, segmentToAdd]; 
         } else {
             const copy = [...state];
             copy.splice(indexOfFirstBiggerElement + 1, 0, segmentToAdd)
